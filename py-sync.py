@@ -3,6 +3,7 @@ import serial
 import time
 import os
 import binascii
+import json
 
 CHUNK_SIZE = 150
 
@@ -23,6 +24,8 @@ class EspSerial(serial.Serial):
                 flag = False
             if flag:
                 result += c
+        if result == '>>> ':
+            result = ''
 
         return result
 
@@ -39,6 +42,23 @@ class EspSerial(serial.Serial):
         assert len(chunk) <= CHUNK_SIZE, 'Chunk is too big!'
 
         return '...' not in self.command("f.write(ubinascii.a2b_base64('%s'))" % binascii.b2a_base64(chunk))
+
+
+def erase(port):
+    print ("Start erasing data...")
+    port.command('import os')
+    _erase(port, '')
+
+
+def _erase(port, dir):
+    string = port.command('os.listdir("{}")'.format(dir))
+    files = eval(string)
+    for file in files:
+        print('remove "{}")'.format(dir+'/'+file))
+        info = port.command('os.remove("{}")'.format(dir+'/'+file))
+        if info != '':  # maybe this is a dir?
+            _erase(port, dir+'/'+file)
+            port.command('os.rmdir("{}")'.format(dir + '/' + file))
 
 
 def sync(port, sources):
@@ -102,16 +122,21 @@ def main():
     parser.description = 'Syncronize files from current directory with filesystem on esp8266';
     parser.add_argument('-p', '--port', help='UART port name')
     parser.add_argument('-b', '--baud', help='UART baud rate', type=int, default=115200)
+    parser.add_argument('--erase', help='Erase all files on esp8266', action="store_true")
     parser.add_argument('--sync', help='Sync with esp8266. By default just show sync files', action="store_true")
     parser.add_argument('--ls', help='List files from esp8266')
     parser.add_argument('--cat', help='Print file content from esp8266')
 
     args = parser.parse_args()
-    print (args)
+    # print (args)
 
     sources = getSources()
 
-    if args.sync:
+    if args.erase:
+        port = EspSerial(args.port, args.baud)
+        erase(port)
+        port.close()
+    elif args.sync:
         print ("Start sync...")
         port = EspSerial(args.port, args.baud)
         sync(port, sources)
