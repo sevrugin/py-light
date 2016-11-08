@@ -1,0 +1,12 @@
+{
+  "sta": {
+    "enabled": true,
+    "essid": "BabayN",
+    "password": "Babay2010"
+  },
+  "ap": {
+    "enabled": true,
+    "essid": "py-node",
+    "password": "123456"
+  }
+}
