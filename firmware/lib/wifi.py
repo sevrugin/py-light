@@ -18,10 +18,14 @@ def _sta(config):
     connect = network.WLAN(network.STA_IF)
     connect.active(True)
     if not connect.isconnected():
+        import time
         print('connecting to %s...' % config['essid'])
         connect.connect(config['essid'], config['password'])
-        while not connect.isconnected():
-            pass
+        i = 10
+        while not connect.isconnected() and i > 0:
+            print(i)
+            i = i - 1
+            time.sleep(0.5)
     print('sta config:', connect.ifconfig())
 
 def _ap(config):

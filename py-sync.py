@@ -65,6 +65,7 @@ def sync(port, sources):
     try:
         print('Preparing...')
 
+        port.command('\x03')
         port.command('import os')
         for source in sources:
             s = source['to']

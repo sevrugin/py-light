@@ -7,6 +7,6 @@
   "ap": {
     "enabled": true,
     "essid": "py-node",
-    "password": "123456"
+    "password": "12345678"
   }
 }
