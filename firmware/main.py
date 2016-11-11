@@ -1,10 +1,13 @@
-import wifi
+import sys
+sys.path.append('./lib')
 
 # p2 = Pin(2, Pin.OUT)
 # p2.low()
 
 print('Hello')
 
-wifi.init()
+if sys.platform != 'linux':
+    import wifi
+    wifi.init()
 
 import http

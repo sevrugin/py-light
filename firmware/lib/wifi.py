@@ -1,7 +1,7 @@
+import utime
+
 def _config():
     import config
-    print(dir(config))
-
     return config.load('cfg/wifi.json')
 
 
@@ -17,16 +17,18 @@ def _sta(config):
     import network
     connect = network.WLAN(network.STA_IF)
     connect.active(True)
-    if not connect.isconnected():
-        import time
-        print('connecting to %s...' % config['essid'])
-        connect.connect(config['essid'], config['password'])
-        i = 10
-        while not connect.isconnected() and i > 0:
-            print(i)
-            i = i - 1
-            time.sleep(0.5)
+
+    nets = connect.scan()
+    for net in nets:
+        if net.ssid in config['essid']:
+            print('trying connecting to %s...' % config['essid'])
+            connect.connect(config['essid'], config['password'])
+            i = 10
+            while not connect.isconnected() and i > 0:
+                i = i - 1
+                utime.sleep(0.5)
     print('sta config:', connect.ifconfig())
+
 
 def _ap(config):
     if not config['enabled']:

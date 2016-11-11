@@ -1,8 +1,10 @@
 {
   "sta": {
     "enabled": true,
-    "essid": "BabayN",
-    "password": "Babay2010"
+    "essid": {
+      "BabayN": "Babay2010",
+      "UniSender": "UniSenderUkraine2014"
+    }
   },
   "ap": {
     "enabled": true,
