@@ -128,17 +128,17 @@ def main():
     parser.add_argument('--ls', help='List files from esp8266')
     parser.add_argument('--cat', help='Print file content from esp8266')
 
+    parser.add_argument('--file', help='Concrete file')
+
     args = parser.parse_args()
     # print (args)
-
-    sources = getSources()
 
     if args.erase:
         port = EspSerial(args.port, args.baud)
         erase(port)
         port.close()
     elif args.sync:
-        print ("Start sync...")
+        sources = getSources(args.file)
         port = EspSerial(args.port, args.baud)
         sync(port, sources)
         port.close()
@@ -151,6 +151,7 @@ def main():
         cat(port, args.cat)
         port.close()
     else:
+        sources = getSources(args.file)
         for file in sources:
             s = file['to']
             while len(s) < 40:
@@ -158,8 +159,12 @@ def main():
             print (s + ' <=\t' + file['from'])
 
 
-def getSources():
+def getSources(file):
     sources = []
+    if file:
+        sources.append({'from': file, 'to': os.path.relpath(file)})
+        return sources
+
     for root, dirs, files in os.walk("./"):
         for file in files:
             path = os.path.join(root, file)

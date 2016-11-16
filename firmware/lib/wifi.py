@@ -18,11 +18,13 @@ def _sta(config):
     connect = network.WLAN(network.STA_IF)
     connect.active(True)
 
+    print('Scan WiFi networks...')
     nets = connect.scan()
     for net in nets:
-        if net.ssid in config['essid']:
-            print('trying connecting to %s...' % config['essid'])
-            connect.connect(config['essid'], config['password'])
+        ssid = net[0].decode("utf-8")
+        if ssid in config['essid']:
+            print('Trying to connect to %s...' % ssid)
+            connect.connect(ssid, config['essid'][ssid])
             i = 10
             while not connect.isconnected() and i > 0:
                 i = i - 1

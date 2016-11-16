@@ -26,16 +26,16 @@ s.listen(5)
 print('Webserver started')
 
 pins = {
-    'G1': {'gpio': 2, 'sec': 0},
-    'Y1': {'gpio': 2, 'sec': 0},
-    'R1': {'gpio': 2, 'sec': 0},
-    'G2': {'gpio': 2, 'sec': 0},
-    'R2': {'gpio': 2, 'sec': 0},
+    'G1': {'gpio': 14},  # 3
+    'Y1': {'gpio': 12},
+    'R1': {'gpio': 13},
+    'G2': {'gpio': 15},
+    'R2': {'gpio': 5},
 }
 
-# for i in pins:
-#     pins[i]['pin'] = Pin(pins[i]['gpio'], Pin.OUT)
-#     pins[i]['pin'].value(0)
+for i in pins:
+    pins[i]['pin'] = Pin(pins[i]['gpio'], Pin.OUT)
+    pins[i]['pin'].value(0)
 
 
 while True:
@@ -52,7 +52,12 @@ while True:
         request = Request(req.decode('ascii'))
 
         url = request.path.split('/')
-        if len(url) == 3:
+        if len(url) == 2:
+            if url[1] == 'test':
+                f = open('../test.html')
+                response = f.readall()
+                f.close()
+        elif len(url) == 3:
             _tmp, _pin, _second = url
             if _pin in pins:
                 pin = pins[_pin]
@@ -64,7 +69,7 @@ while True:
                     response = '"seconds" must be positive integer lower then 3600'
                 else:
                     response = 'OK: run {} pin to {} seconds'.format(_pin, _second)
-                    # pins[i]['pin'].value(_second)
+                    pins[_pin]['pin'].value(_second)
                     print('RUN', _pin, _second)
             else:
                 response = 'Unknown pin "{}". Use only "{}"'.format(_pin, list(pins.keys()))
