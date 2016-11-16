@@ -1,13 +1,17 @@
 import sys
-sys.path.append('./lib')
-
-# p2 = Pin(2, Pin.OUT)
-# p2.low()
-
-print('Hello')
 
 if sys.platform != 'linux':
-    import wifi
+    from pynode import wifi
     wifi.init()
 
-import http
+    from machine import Timer
+    tim = Timer(-1)
+    tim.init(period=2000, mode=Timer.PERIODIC, callback=wifi.check)
+
+
+# start HTTP-server
+from pynode.http.server import Server
+from src.controller.controller import LighterController
+
+server = Server(LighterController())
+server.start()

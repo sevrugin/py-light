@@ -8,4 +8,4 @@ def load(path):
 
         return ujson.loads(''.join(json))
     except Exception as e:
-        print(e)
+        print('Filed to load JSON on path %s' % path, e)

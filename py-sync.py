@@ -3,7 +3,6 @@ import serial
 import time
 import os
 import binascii
-import json
 
 CHUNK_SIZE = 150
 
@@ -45,7 +44,7 @@ class EspSerial(serial.Serial):
 
 
 def erase(port):
-    print ("Start erasing data...")
+    print("Start erasing data...")
     port.command('import os')
     _erase(port, '')
 
@@ -71,13 +70,13 @@ def sync(port, sources):
             s = source['to']
             while len(s) < 40:
                 s += ' '
-            print (s + ' <=\t' + source['from'])
+            print(s + ' <=\t' + source['from'])
 
-            dir = os.path.dirname(source['to'])
+            dirname = os.path.dirname(source['to'])
             try:
-                port.command("os.mkdir('/%s')" % dir)
-            except Exception as e:
-                e
+                port.command("os.mkdir('/%s')" % dirname)
+            except Exception:
+                pass
 
             try:
                 port.command('import ubinascii')
@@ -102,13 +101,15 @@ def sync(port, sources):
     print ('Done.')
 
 
-def ls(port, dir):
+def ls(port, path):
+    port.command('\x03')
     port.command('import os')
-    res = port.command("os.listdir('%s')" % dir)
-    print (res)
+    res = port.command("os.listdir('%s')" % path)
+    print(res)
 
 
 def cat(port, file):
+    port.command('\x03')
     port.command("f = open('%s', 'r')" % file)
     res = port.command("f.readall()")
     port.command("f.close()")
@@ -120,7 +121,7 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.description = 'Syncronize files from current directory with filesystem on esp8266';
+    parser.description = 'Syncronize files from current directory with filesystem on esp8266'
     parser.add_argument('-p', '--port', help='UART port name')
     parser.add_argument('-b', '--baud', help='UART baud rate', type=int, default=115200)
     parser.add_argument('--erase', help='Erase all files on esp8266', action="store_true")
@@ -138,7 +139,7 @@ def main():
         erase(port)
         port.close()
     elif args.sync:
-        sources = getSources(args.file)
+        sources = get_sources(args.file)
         port = EspSerial(args.port, args.baud)
         sync(port, sources)
         port.close()
@@ -151,7 +152,7 @@ def main():
         cat(port, args.cat)
         port.close()
     else:
-        sources = getSources(args.file)
+        sources = get_sources(args.file)
         for file in sources:
             s = file['to']
             while len(s) < 40:
@@ -159,7 +160,7 @@ def main():
             print (s + ' <=\t' + file['from'])
 
 
-def getSources(file):
+def get_sources(file):
     sources = []
     if file:
         sources.append({'from': file, 'to': os.path.relpath(file)})

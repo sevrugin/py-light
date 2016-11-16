@@ -1,7 +1,8 @@
 import utime
 
+
 def _config():
-    import config
+    from pynode import config
     return config.load('cfg/wifi.json')
 
 
@@ -16,6 +17,7 @@ def _sta(config):
         return
     import network
     connect = network.WLAN(network.STA_IF)
+    connect.active(False)
     connect.active(True)
 
     print('Scan WiFi networks...')
@@ -27,8 +29,10 @@ def _sta(config):
             connect.connect(ssid, config['essid'][ssid])
             i = 10
             while not connect.isconnected() and i > 0:
-                i = i - 1
+                i -= 1
                 utime.sleep(0.5)
+            if connect.isconnected():
+                break
     print('sta config:', connect.ifconfig())
 
 
@@ -40,3 +44,12 @@ def _ap(config):
     connect.active(True)  # activate the interface
     connect.config(essid=config['essid'])
     print('ap config:', connect.ifconfig())
+
+
+def check(param):
+    import network
+    connect = network.WLAN(network.STA_IF)
+    if not connect.isconnected() and connect.ifconfig()[0] == '0.0.0.0':
+        print('WiFi disconnected...', connect.ifconfig())
+
+        # init()
