@@ -24,7 +24,11 @@ class Request:
 
         if len(tmp) > 1 and tmp[1] != '':
             self.query = self.parse_query(tmp[1])
+        else:
+            self.query = {}
 
+        self.request = {}
+        self.content = ''
         while len(data):
             str = data.pop(0)
             if str == '':
