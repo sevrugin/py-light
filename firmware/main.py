@@ -6,7 +6,7 @@ if sys.platform != 'linux':
 
     from machine import Timer
     tim = Timer(-1)
-    tim.init(period=2000, mode=Timer.PERIODIC, callback=wifi.check)
+    tim.init(period=10000, mode=Timer.PERIODIC, callback=wifi.check)
 
 
 # start HTTP-server

@@ -57,5 +57,9 @@ class Server:
                 response = Response('Controller error: {message}'.format(message=e), 400)
             except Exception as e:
                 response = Response('Runtime error: {message}'.format(message=e), 400)
-            client_s.send(response.__string())
-            client_s.close()
+
+            try:
+                client_s.send(response.__string())
+                client_s.close()
+            except Exception as e:
+                print('Error on send Response')

@@ -1,5 +1,7 @@
 import utime
 
+WIFI_PIN = 15
+
 
 def _config():
     from pynode import config
@@ -51,5 +53,7 @@ def check(param):
     connect = network.WLAN(network.STA_IF)
     if not connect.isconnected() and connect.ifconfig()[0] == '0.0.0.0':
         print('WiFi disconnected...', connect.ifconfig())
-
-        # init()
+        from machine import Pin
+        p = Pin(WIFI_PIN, Pin.OUT)
+        p.value(1)
+        init()
