@@ -12,7 +12,6 @@ G2 - зеленый пешеходный
 
 Дли тестирования светофора существует web-инфтерфейс
 http://[lighter-ip]/test
-![image](http://joxi.ru/Q2KjWgZF4ynzvm)
 
 # Связка с JIRA
 Связка с JIRA реализовано через скрипт server/task_lighter.py
