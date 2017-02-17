@@ -2,8 +2,8 @@
   "sta": {
     "enabled": true,
     "essid": {
-      "BabayN": "Babay2010",
-      "UniSender": "UniSenderUkraine2014"
+      "<ESSID>": "<PASSWORD>",
+      "<ESSID2>": "<PASSWORD2>"
     }
   },
   "ap": {
